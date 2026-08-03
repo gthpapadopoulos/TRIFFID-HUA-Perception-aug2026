@@ -1,4 +1,4 @@
-# TRIFFID UGV/UAV Perception Module (T4.1)
+# TRIFFID UGV/UAV Perception Module (T4.1) - AUGUST 2026 VERSION
 
 **Harokopio University of Athens, TRIFFID Research Project**
 
