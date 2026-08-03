@@ -1,0 +1,36 @@
+services:
+  perception:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: triffid_perception:latest
+    container_name: triffid_perception
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1            # use 1 GPU (change to "all" for both)
+              capabilities: [gpu]
+
+    volumes:
+      - ./src:/ws/src                          # source code (editable from host)
+      - ./install:/ws/install                  # persist build artifacts
+      - ./build:/ws/build                      # persist build artifacts
+      - ./log:/ws/log                          # persist logs
+      - ./cyclonedds.xml:/ws/cyclonedds.xml:ro # DDS config
+      - ./best.pt:/ws/best.pt:ro               # model weights
+      - ./samples:/ws/samples                  # periodic GeoJSON snapshots
+
+    network_mode: host    # shares host network so ROS2 DDS works seamlessly
+    ipc: host             # shared memory for fast DDS transport
+
+    environment:
+      - ROS_DOMAIN_ID=42
+      - CYCLONEDDS_URI=file:///ws/cyclonedds.xml
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+
+    stdin_open: true
+    tty: true

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CycloneDDS xmlns="https://cdds.io/config">
+  <Domain>
+    <Internal>
+      <!-- Increase fragment reassembly buffer for large images (1280x720 BGR ~ 2.8 MB) -->
+      <DefragReliableMaxSamples>32</DefragReliableMaxSamples>
+      <DefragUnreliableMaxSamples>32</DefragUnreliableMaxSamples>
+    </Internal>
+    <General>
+      <MaxMessageSize>65500</MaxMessageSize>
+      <FragmentSize>4096</FragmentSize>
+    </General>
+  </Domain>
+</CycloneDDS>

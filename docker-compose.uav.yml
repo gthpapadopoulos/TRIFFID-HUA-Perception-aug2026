@@ -1,0 +1,35 @@
+services:
+  uav_perception:
+    build:
+      context: .
+      dockerfile: Dockerfile.uav
+    image: triffid_uav_perception:latest
+    container_name: triffid_uav_perception
+
+    # GPU access, remove this block if no GPU is available.
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+    volumes:
+      - ./src/triffid_uav_perception:/app/src/triffid_uav_perception  # source (editable)
+      - ./src/triffid_telesto:/app/src/triffid_telesto                # TELESTO REST client (--post-telesto)
+      - ./uav_data:/app/uav_data                                      # additional input media
+      - ./uav_videos:/app/videos                                      # input videos
+      - ./uav_samples:/app/samples                                    # output GeoJSON
+      - ./best.pt:/app/best.pt:ro                                     # model weights
+
+    network_mode: host    # so --post-telesto can reach the network directly
+    ipc: host
+
+    environment:
+      - PYTHONPATH=/app/src/triffid_uav_perception:/app/src
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+
+    stdin_open: true
+    tty: true
